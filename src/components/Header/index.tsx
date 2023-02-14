@@ -23,7 +23,7 @@ export function Header() {
             <Dialog.Title className="text-3xl leading-tight font-extrabold">
               Adicionar Tarefa
             </Dialog.Title>
-            <NewTaskForm />
+            <NewTaskForm edit={false} dataEdit={{}} />
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

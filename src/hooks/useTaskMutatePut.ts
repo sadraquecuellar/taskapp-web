@@ -2,13 +2,14 @@ import { useMutation } from "react-query";
 import { TaskData } from "../interfaces/task-data";
 import api from "../services/api";
 
-const postTask = async (data: TaskData)=> {
-  return await api.post('/task', data)
+const putTask = async (data: TaskData)=> {
+  return await api.put(`/task/${data?.id}`, data)
 }
 
-export function useTaskMutate(){
+export function useTaskMutatePut(){
   const mutate = useMutation({
-    mutationFn:postTask
+    mutationFn:putTask,
+    mutationKey: ['put-task']
   })
 
   return mutate

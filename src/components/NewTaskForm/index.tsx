@@ -1,16 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Check, CaretDown } from 'phosphor-react';
-import { useTaskMutate } from '../../hooks/useTaskMutate';
+import { useTaskMutatePost } from '../../hooks/useTaskMutatePost';
+import { useTaskMutatePut } from '../../hooks/useTaskMutatePut';
+import api from '../../services/api';
 
-export function NewTaskForm() {
-  const [color, setColor] = useState('white')
+interface TaskForm {
+  edit: boolean;
+  dataEdit: {
+    id: number,
+    color: string,
+    title: string,
+    description: string
+  };
+}
+
+export function NewTaskForm({edit, dataEdit}: TaskForm) {
+  const [id, setId] = useState(0)
+  const [color, setColor] = useState('bg-white')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-
-  const {mutate, isSuccess} = useTaskMutate()
-
-  const handleSave = () => {
-    const newTask = { 
+  
+  const handleSubmitNewTask= () => {
+    const {mutate} = useTaskMutatePost()
+    const newTask = {
+      id: 0,
       title,
       description,
       color,
@@ -19,6 +32,26 @@ export function NewTaskForm() {
     }
     mutate(newTask)
   }
+  const handleSubmitEditTask = async () => {
+    const editTask = {
+      title,
+      description,
+      color,
+    }
+
+    const edit = await api.put(`/task/${id}`, editTask)
+    console.log(edit)
+
+  }
+
+  useEffect(()=>{
+    if(edit){
+      setId(dataEdit?.id)
+      setColor(dataEdit?.color)
+      setTitle(dataEdit?.title)
+      setDescription(dataEdit?.description)
+    }
+  },[])
 
 
   return (
@@ -50,7 +83,7 @@ export function NewTaskForm() {
       </label>
       <div className="w-full flex flex-row ">
         <div className="relative mt-2 mb-2 w-2/3">
-          <select onChange={(e)=>{setColor(e.target.value)}} className="block appearance-none w-full bg-zinc-800  hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+          <select onChange={(e)=>{setColor(e.target.value)}} value={color} className="block appearance-none w-full bg-zinc-800  hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
             <option value="">Aleatório</option>
             <option value="bg-yellow-500">Amarelo</option>
             <option value="bg-blue-500">Azul</option>
@@ -68,8 +101,7 @@ export function NewTaskForm() {
       </div>
 
       <button
-        onClick={()=> handleSave()}
-        type="submit"
+        onClick={()=> edit ? handleSubmitEditTask() : handleSubmitNewTask()}
         className="mt-6 rounded-lg p-4 flex items-center justify-center gap-3 font-semibold bg-green-600 hover:bg-green-500"
       >
         <Check size={20} weight="bold" />
