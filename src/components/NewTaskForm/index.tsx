@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Check, CaretDown } from 'phosphor-react';
 import { useTaskMutatePost } from '../../hooks/useTaskMutatePost';
-import { useTaskMutatePut } from '../../hooks/useTaskMutatePut';
 import api from '../../services/api';
 
 interface TaskForm {
@@ -19,9 +18,10 @@ export function NewTaskForm({edit, dataEdit}: TaskForm) {
   const [color, setColor] = useState('bg-white')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+
+  const {mutate} = useTaskMutatePost()
   
   const handleSubmitNewTask= () => {
-    const {mutate} = useTaskMutatePost()
     const newTask = {
       id: 0,
       title,
@@ -32,6 +32,7 @@ export function NewTaskForm({edit, dataEdit}: TaskForm) {
     }
     mutate(newTask)
   }
+  
   const handleSubmitEditTask = async () => {
     const editTask = {
       title,
@@ -39,9 +40,7 @@ export function NewTaskForm({edit, dataEdit}: TaskForm) {
       color,
     }
 
-    const edit = await api.put(`/task/${id}`, editTask)
-    console.log(edit)
-
+   await api.put(`/task/${id}`, editTask)
   }
 
   useEffect(()=>{
