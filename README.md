@@ -1,13 +1,16 @@
-# taskapp-server
+# taskapp-app
 
-client side of taskapp using React + typescript
+server side of taskapp using node js
 
 tools used:
-- fastify
-- prisma (ORM)
-- zod (validations)
+- react-query
+- material-ui
+- dayjs (Dates)
+- phosphor-react (icons)
 
 
-npm run dev to run the server
+npm run dev to run the app
+
+
 
 
